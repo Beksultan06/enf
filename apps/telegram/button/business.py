@@ -45,6 +45,10 @@ def business_keyboard():
     keyboard.add(
         types.InlineKeyboardButton('Корумду', callback_data='city_korymdy'),
     )
+    keyboard.add(
+        types.InlineKeyboardButton('Назад', callback_data='back_to_start')
+
+    )
     return keyboard
 
 def create_start_keyboard():
@@ -59,8 +63,8 @@ def create_accommodation_keyboard():
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     for acc_type in accommodation_types:
         keyboard.add(types.InlineKeyboardButton(acc_type, callback_data=f'acc_{acc_type}'))
+    keyboard.add(types.InlineKeyboardButton('Назад', callback_data='back_to_region'))
     return keyboard
-
 
 amenities = ['Питание', 'Кондиционер', 'Стиральная машина', 'Утюг', 'Балкон', 'Wi-Fi', 'Бассейн', 'Парковка', 'Фитнес-зал', 'Душ', 'Cанузел', 'Холодильник', 'Cейф', 'ТВ', 'Баня', 'Зона барбекю']
 

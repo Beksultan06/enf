@@ -1,10 +1,8 @@
 import logging
 from aiogram import types, Dispatcher
-import aiogram
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from asgiref.sync import sync_to_async
-import asyncio
 
 from apps.telegram.button.business import (
     create_amenities_keyboard, create_start_keyboard, business_keyboard,
@@ -87,7 +85,8 @@ async def business_start(callback_query: types.CallbackQuery):
 
 async def continue_handler(callback_query: types.CallbackQuery):
     logging.info("Callback continue получен")
-    keyboard = business_keyboard().add(InlineKeyboardButton('Назад', callback_data='business_start'))
+    keyboard = business_keyboard()
+    logging.info("Возрат в business_start")
     await callback_query.message.edit_text("Выберите регион:", reply_markup=keyboard)
     await BusinessForm.region.set()
     logging.info("Ожидается выбор региона")
@@ -101,8 +100,8 @@ async def process_region(callback_query: types.CallbackQuery, state: FSMContext)
 
 async def back_to_region(callback_query: types.CallbackQuery, state: FSMContext):
     await BusinessForm.region.set()
-    await callback_query.message.edit_text("Выберите регион:", reply_markup=business_keyboard().add(InlineKeyboardButton('Назад', callback_data='back_to_start')))
-    logging.info("Возврат к выбору региона")
+    await callback_query.message.edit_text("Выберите регион:", reply_markup=business_keyboard())
+    logging.info("Возврат к выбору региона back_to_start")
 
 async def process_pansionat(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -158,7 +157,7 @@ async def done_selecting_amenities(query: types.CallbackQuery, state: FSMContext
 
     # Send a separate message prompting for the number of places
     await query.message.answer("Введите количество мест в формате 5-9:", reply_markup=create_back_button('back_to_amenities'))
-    
+
     await BusinessForm.next()
     logging.info("Ожидается ввод количества мест")
 
@@ -186,7 +185,7 @@ async def process_price(message: types.Message, state: FSMContext):
 
 async def back_to_price(callback_query: types.CallbackQuery, state: FSMContext):
     await BusinessForm.price.set()
-    await callback_query.message.edit_text("Введите цену в долларах:", reply_markup=create_back_button('back_to_number_of_places'))
+    await callback_query.message.edit_text("Введите цену в сомах:", reply_markup=create_back_button('back_to_number_of_places'))
     logging.info("Возврат к вводу цены")
 
 async def process_phone_number(message: types.Message, state: FSMContext):
